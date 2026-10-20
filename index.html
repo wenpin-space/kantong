@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kantong</title>
+<meta name="description" content="Kantong — aplikasi keuangan pribadi">
+<meta name="theme-color" content="#0f6b5c">
+<meta name="apple-mobile-web-app-title" content="Kantong">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<style>
+  :root { color-scheme: light dark; }
+  [hidden] { display: none !important; }
+  html, body { margin: 0; height: 100%; background: #0f6b5c; color: #f1faf7;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { min-height: 100%; display: grid; place-items: center; text-align: center; padding: 24px; box-sizing: border-box; }
+  img { width: 112px; height: 112px; border-radius: 26px; box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+  h1 { font-size: 26px; margin: 18px 0 4px; letter-spacing: -.01em; }
+  p { margin: 0 0 18px; color: #bfe0d8; font-size: 15px; }
+  a.btn { display: inline-block; background: #f2b632; color: #0a3f36; font-weight: 700; text-decoration: none;
+    padding: 12px 22px; border-radius: 14px; }
+  .setup { max-width: 420px; background: rgba(255,255,255,.1); border-radius: 14px; padding: 14px 16px; font-size: 14px; text-align: left; line-height: 1.5; }
+  code { background: rgba(0,0,0,.25); padding: 1px 5px; border-radius: 5px; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <img src="icon-192.png" alt="" width="112" height="112">
+    <h1>Kantong</h1>
+    <p id="msg">Keuangan pribadi</p>
+    <a class="btn" id="go" href="#">Buka Kantong</a>
+    <div class="setup" id="setup" hidden>
+      Isi alamat aplikasimu di file <code>index.html</code>, baris <code>APP_URL</code>:
+      link deployment Apps Script yang berakhiran <code>/exec</code>.
+    </div>
+    <div class="setup" id="install" style="margin-top:22px">
+      <b>📲 Pasang ikon di layar utama</b><br>
+      <span id="step1">Ketuk <b>Siapkan</b>, lalu ikuti langkah yang muncul.</span>
+      <div id="step2" hidden>
+        <b>Android (Chrome):</b> ketuk ⋮ → <b>Tambahkan ke layar utama</b> → Tambahkan.<br>
+        <b>iPhone (Safari):</b> ketuk tombol Bagikan <span aria-hidden="true">⬆︎</span> → <b>Tambah ke Layar Utama</b> → Tambah.<br>
+        Setelah itu, ikon Kantong langsung membuka aplikasimu.
+      </div>
+      <div style="margin-top:10px"><a class="btn" id="prep" href="./?app" style="padding:8px 16px;font-size:14px">Siapkan</a></div>
+    </div>
+  </div>
+</main>
+<script>
+  // ⬇️ Ganti dengan link Web app Kantong-mu (Deploy → Manage deployments → URL yang berakhiran /exec)
+  const APP_URL = 'https://script.google.com/macros/s/GANTI_DENGAN_ID_DEPLOYMENT/exec';
+
+  const $ = id => document.getElementById(id);
+  const ok = APP_URL.indexOf('GANTI_') === -1 && /^https:\/\/script\.google\.com\/macros\/s\/[\w-]{20,}\/exec$/.test(APP_URL);
+  const fromIcon = new URLSearchParams(location.search).has('app');
+  let staying = false;
+  try { staying = sessionStorage.getItem('kantong-stay') === '1'; } catch (e) { /* abaikan */ }
+
+  if (!ok) {
+    $('msg').textContent = 'Belum diatur.'; $('setup').hidden = false; $('go').hidden = true; $('install').hidden = true;
+  } else {
+    $('go').href = APP_URL;
+    if (fromIcon && !staying) {
+      // dibuka dari ikon di layar utama → langsung ke aplikasi
+      $('install').hidden = true; $('msg').textContent = 'Membuka aplikasi…';
+      location.replace(APP_URL);
+    } else if (fromIcon) {
+      // sedang menyiapkan ikon: tetap di halaman ini supaya bisa ditambahkan ke layar utama
+      $('step1').hidden = true; $('step2').hidden = false; $('prep').hidden = true;
+    }
+    $('prep').addEventListener('click', () => { try { sessionStorage.setItem('kantong-stay', '1'); } catch (e) { /* abaikan */ } });
+  }
+</script>
+</body>
+</html>
