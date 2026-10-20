@@ -7,7 +7,14 @@
 <meta name="description" content="Kantong — aplikasi keuangan pribadi">
 <meta name="theme-color" content="#0f6b5c">
 <meta name="apple-mobile-web-app-title" content="Kantong">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" id="mf" href="manifest.webmanifest?v=3">
+<script>
+  // Android: dipasang sebagai aplikasi (satu jendela, tidak buka tab baru tiap diketuk).
+  // iPhone: tetap shortcut biasa di Safari supaya login Google tidak diminta ulang.
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) {
+    document.getElementById('mf').href = 'manifest-browser.webmanifest?v=3';
+  }
+</script>
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -57,7 +64,7 @@
         <div style="margin-top:10px"><a class="btn" id="prep" href="./?app" style="padding:9px 18px;font-size:15px">Siapkan</a></div></div>
       <div id="step2" hidden>
         <b>Android (Chrome):</b>
-        <ol><li>Ketuk <b>⋮</b> (titik tiga, kanan atas).</li><li>Pilih <b>Tambahkan ke layar utama</b> (atau <b>Instal aplikasi</b>).</li><li>Ketuk <b>Tambahkan</b>.</li></ol>
+        <ol><li>Ketuk <b>⋮</b> (titik tiga, kanan atas).</li><li>Pilih <b>Instal aplikasi</b> (kalau tidak ada: <b>Tambahkan ke layar utama</b> → <b>Instal</b>).</li><li>Ketuk <b>Instal</b>.</li></ol>
         <b style="display:block;margin-top:8px">iPhone (Safari):</b>
         <ol><li>Ketuk tombol <b>Bagikan</b> (kotak dengan panah ke atas).</li><li>Gulir, pilih <b>Tambah ke Layar Utama</b>.</li><li>Ketuk <b>Tambah</b>.</li></ol>
         <div style="margin-top:8px">Selesai — ikon Kantong langsung membuka aplikasimu.</div>
